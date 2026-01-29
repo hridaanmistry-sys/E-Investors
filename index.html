@@ -1,208 +1,476 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>E-Investors Platform</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta charset="utf-8" />
+  <title>E-Investors Platform</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="E-Investors — Smart · Secure · Transparent Investments" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<style>
-body{margin:0;font-family:Segoe UI;background:#f4f6fa}
-header,footer{background:#0b2545;color:white;text-align:center;padding:18px}
-nav{background:#133b5c;text-align:center;padding:10px}
-nav button{margin:5px;padding:10px 16px;border:none;border-radius:6px;background:#1f6f8b;color:white;cursor:pointer}
-nav button:hover{background:#1597bb}
-.section{display:none}
-.container{padding:25px}
-.card{background:white;padding:20px;border-radius:12px;margin-bottom:15px;box-shadow:0 4px 12px rgba(0,0,0,.08)}
-input,select{width:100%;padding:12px;margin:8px 0}
-button.action{background:#0b2545;color:white;padding:12px;border:none;border-radius:6px;width:100%}
-.tag{font-size:12px;padding:4px 10px;border-radius:4px;color:white}
-.blue{background:#457b9d}
-.green{background:#2a9d8f}
-.orange{background:#f4a261}
-#welcome{min-height:85vh;display:flex;align-items:center;justify-content:center;
-background:linear-gradient(to right,#0b2545,#133b5c);color:white;text-align:center}
-#chatBtn{position:fixed;bottom:20px;right:20px;background:#0b2545;color:white;
-width:55px;height:55px;border-radius:50%;display:flex;align-items:center;
-justify-content:center;font-size:22px;cursor:pointer}
-#chatbox{position:fixed;bottom:90px;right:20px;width:320px;background:white;
-border-radius:12px;display:none;box-shadow:0 6px 18px rgba(0,0,0,.3)}
-#chatHeader{background:#0b2545;color:white;padding:10px;border-radius:12px 12px 0 0}
-#chatBody{padding:10px;height:220px;overflow-y:auto}
-#chatInput{width:100%;padding:10px;border:none;border-top:1px solid #ccc}
-</style>
+  <style>
+    :root{
+      --bg:#f4f6fa;
+      --primary:#0b2545;
+      --primary-2:#133b5c;
+      --accent:#1f6f8b;
+      --muted:#6b7280;
+      --card:#ffffff;
+      --success:#2a9d8f;
+      --warning:#f4a261;
+      --blue:#457b9d;
+      --radius:12px;
+      --container:1100px;
+      --glass: rgba(255,255,255,0.6);
+    }
+
+    /* Reset + base */
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: linear-gradient(180deg,var(--bg),#e9eef5);
+      color:#0f1724;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      line-height:1.45;
+    }
+
+    .site{
+      max-width:var(--container);
+      margin:0 auto;
+      padding:18px;
+    }
+
+    header{
+      background: linear-gradient(90deg,var(--primary),var(--primary-2));
+      color:white;
+      border-radius: var(--radius);
+      padding:18px 20px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+    header .brand{
+      display:flex;
+      gap:12px;
+      align-items:center;
+    }
+    .logo{
+      width:52px;height:52px;border-radius:10px;background:linear-gradient(135deg,#1565C0,#0b2545);
+      display:flex;align-items:center;justify-content:center;color:white;font-weight:700;
+      box-shadow:0 6px 18px rgba(11,37,69,.18);
+      font-size:20px;
+    }
+    header h1{margin:0;font-size:20px;letter-spacing:0.2px}
+    header p{margin:0;font-size:13px;color:rgba(255,255,255,.85)}
+
+    /* Nav */
+    nav{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      margin-top:12px;
+      flex-wrap:wrap;
+    }
+    .nav-btn{
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.06);
+      color:white;
+      padding:8px 12px;
+      border-radius:8px;
+      cursor:pointer;
+      font-size:14px;
+    }
+    .nav-btn:hover{background:rgba(255,255,255,.09)}
+
+    /* Hero */
+    #welcome{
+      min-height:56vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:white;
+      border-radius:var(--radius);
+      margin-top:16px;
+      background: linear-gradient(90deg,var(--primary),var(--primary-2));
+      padding:40px;
+    }
+    .hero-inner{max-width:900px;text-align:center}
+    .hero-inner h2{margin:0 0 8px;font-size:34px}
+    .hero-inner p{margin:0 0 18px;color:rgba(255,255,255,.92);font-size:16px}
+    .cta{
+      background:white;color:var(--primary);
+      padding:12px 18px;border-radius:10px;border:none;font-weight:600;
+      cursor:pointer;box-shadow:0 8px 28px rgba(11,37,69,.16)
+    }
+    .cta.secondary{background:transparent;border:1px solid rgba(255,255,255,.12);color:white}
+
+    /* Content */
+    .container{
+      padding:20px 0;
+      display:block;
+    }
+    .card{
+      background:var(--card);
+      padding:20px;border-radius:12px;margin-bottom:15px;
+      box-shadow:0 6px 18px rgba(13,34,70,.06);
+    }
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(12,1fr);
+      gap:16px;
+    }
+    .col-4{grid-column:span 4}
+    .col-8{grid-column:span 8}
+    .col-12{grid-column:span 12}
+
+    input,select,textarea{
+      width:100%;padding:12px;border-radius:8px;border:1px solid #e6eef6;
+      margin:8px 0;font-size:14px;background: #fff;
+    }
+    .action{background:var(--primary);color:white;padding:12px;border:none;border-radius:8px;cursor:pointer}
+    .small{font-size:13px;color:var(--muted)}
+
+    .tag{font-size:12px;padding:6px 10px;border-radius:6px;color:white;display:inline-block}
+    .blue{background:var(--blue)}
+    .green{background:var(--success)}
+    .orange{background:var(--warning)}
+
+    /* Companies and investors lists */
+    .list-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:12px;margin-top:12px;
+    }
+    .company-card{padding:14px;border-radius:10px;border:1px solid #eef4fb;background:linear-gradient(180deg,#fff,#fbfdff)}
+
+    footer{
+      margin-top:22px;text-align:center;color:var(--muted);font-size:13px;padding:18px 0;
+    }
+
+    /* Chat */
+    #chatBtn{position:fixed;bottom:20px;right:20px;background:var(--primary);color:white;
+      width:56px;height:56px;border-radius:50%;display:flex;align-items:center;
+      justify-content:center;font-size:22px;cursor:pointer;box-shadow:0 12px 30px rgba(11,37,69,.2)}
+    #chatbox{position:fixed;bottom:90px;right:20px;width:340px;background:white;
+      border-radius:12px;display:none;box-shadow:0 12px 40px rgba(11,37,69,.22);overflow:hidden}
+    #chatHeader{background:linear-gradient(90deg,var(--primary),var(--primary-2));color:white;padding:12px}
+    #chatBody{padding:12px;height:260px;overflow:auto;background:#fafcff}
+    #chatInput{width:100%;padding:12px;border:none;border-top:1px solid #eef4fb;outline:none}
+
+    /* Responsive */
+    @media (max-width:900px){
+      .site{padding:12px}
+      .hero-inner h2{font-size:26px}
+      .grid{grid-template-columns:repeat(6,1fr)}
+      .col-4{grid-column:span 6}
+      .col-8{grid-column:span 6}
+    }
+
+  </style>
 </head>
 
 <body>
+  <div class="site">
+    <header>
+      <div class="brand">
+        <div class="logo" aria-hidden="true">EI</div>
+        <div>
+          <h1>E-Investors</h1>
+          <p>Smart · Secure · Transparent Investments</p>
+        </div>
+      </div>
 
-<header>
-<h1>E-Investors</h1>
-<p>Smart • Secure • Transparent Investments</p>
-</header>
+      <div>
+        <nav aria-label="Main navigation">
+          <button class="nav-btn" onclick="show('welcome')">Home</button>
+          <button class="nav-btn" onclick="show('login')">Login / Signup</button>
+          <button class="nav-btn" onclick="show('dashboard')">Dashboard</button>
+          <button class="nav-btn" onclick="show('companies')">Companies</button>
+          <button class="nav-btn" onclick="show('investors')">Investors</button>
+          <button class="nav-btn" onclick="logout()">Logout</button>
+        </nav>
+      </div>
+    </header>
 
-<nav>
-<button onclick="show('welcome')">Welcome</button>
-<button onclick="show('login')">Login</button>
-<button onclick="show('dashboard')">Dashboard</button>
-<button onclick="show('companies')">Companies</button>
-<button onclick="show('investors')">Investors</button>
-<button onclick="logout()">Logout</button>
-</nav>
+    <main>
+      <section id="welcome" class="card" aria-labelledby="welcome-heading">
+        <div class="hero-inner">
+          <h2 id="welcome-heading">Where Capital Meets Opportunity</h2>
+          <p>Discover verified investors and growing or turnaround-ready companies. Designed for transparency and results.</p>
+          <div style="display:flex;gap:12px;justify-content:center;margin-top:16px">
+            <button class="cta" onclick="show('login')">Get Started</button>
+            <button class="cta secondary" onclick="show('companies')">Explore Companies</button>
+          </div>
+        </div>
+      </section>
 
-<div id="welcome" class="section">
-<div>
-<h1 align = 'centre'>Where Capital Meets Opportunity</h1>
-<p align = 'centre'>Discover verified investors and growing or struggling companies</p>
-<button class="action" onclick="show('login')" align = 'centre'>Join / Invest</button>
-</div>
-</div>
+      <div class="container">
+        <!-- LOGIN -->
+        <section id="login" class="section card" style="display:none">
+          <h3>Login / Signup</h3>
+          <p class="small">Create an account as an investor, company or admin.</p>
+          <div style="max-width:520px">
+            <label for="role">Select role</label>
+            <select id="role">
+              <option value="investor">Investor</option>
+              <option value="company">Company</option>
+              <option value="admin">Admin</option>
+            </select>
 
-<div class="container">
+            <label for="name">Full name</label>
+            <input id="name" placeholder="Full Name" />
 
-<!-- LOGIN -->
-<div id="login" class="section card">
-<h3>Login / Signup</h3>
-<select id="role">
-<option value="investor">Investor</option>
-<option value="company">Company</option>
-<option value="admin">Admin</option>
-</select>
-<input id="name" placeholder="Full Name">
-<input id="email" placeholder="Email">
-<button class="action" onclick="login()">Continue</button>
-</div>
+            <label for="email">Email</label>
+            <input id="email" placeholder="Email" type="email" />
 
-<!-- DASHBOARD -->
-<div id="dashboard" class="section">
-<div id="investorDash" class="card">
-<h3>Investor Dashboard <span class="tag blue">Investor</span></h3>
-<p id="invName"></p>
-<canvas id="roiChart"></canvas>
-</div>
+            <button class="action" onclick="login()">Continue</button>
+          </div>
+        </section>
 
-<div id="companyDash" class="card">
-<h3>Company Dashboard <span class="tag green">Company</span></h3>
-<p>Turnover ₹12 Cr | Margin 32%</p>
-<canvas id="turnoverChart"></canvas>
-</div>
+        <!-- DASHBOARD -->
+        <section id="dashboard" class="section" style="display:none">
+          <div class="grid">
+            <div class="col-4">
+              <div id="investorDash" class="card" style="display:none">
+                <div style="display:flex;justify-content:space-between;align-items:center">
+                  <h3 style="margin:0">Investor Dashboard <span class="tag blue">Investor</span></h3>
+                </div>
+                <p id="invName" class="small"></p>
+                <canvas id="roiChart" style="max-height:200px"></canvas>
+              </div>
+            </div>
 
-<div id="adminDash" class="card">
-<h3>Admin Dashboard <span class="tag orange">Admin</span></h3>
-<canvas id="platformChart"></canvas>
-</div>
-</div>
+            <div class="col-4">
+              <div id="companyDash" class="card" style="display:none">
+                <div style="display:flex;justify-content:space-between;align-items:center">
+                  <h3 style="margin:0">Company Dashboard <span class="tag green">Company</span></h3>
+                </div>
+                <p class="small">Turnover ₹12 Cr | Margin 32%</p>
+                <canvas id="turnoverChart" style="max-height:200px"></canvas>
+              </div>
+            </div>
 
-<!-- COMPANIES -->
-<div id="companies" class="section">
-<h2>Companies</h2>
-<script>
-const companies=[
-"GreenTech Pvt Ltd","MediCore Pharma","AgroGrow Industries","SteelForge Ltd",
-"SolarNest Energy","UrbanBuild Infra","AquaPure Systems","HealthPlus Labs",
-"EcoPack Solutions","FinEdge Services","CloudNova Tech","AutoSpark Motors",
-"EduPrime Solutions","BioLife Organics","SmartLogix","FreshKart Supply",
-"PowerGridX","NanoSoft AI","BlueWave Shipping","AgriRoots Ltd",
-"MetalCore Works","RetailNova","TextilePro","FoodChain Pvt Ltd",
-"MedAssist","InfraLine","GreenFuel Bio","UrbanFoods","CyberShield","BuildSmart"
-];
-companies.forEach((c,i)=>{
-document.write(`<div class='card'><b>${c}</b><br>
-State: India | Turnover: ₹${(i+3)*1.2} Cr | Margin: ${15+i%20}%</div>`);
-});
-</script>
-</div>
+            <div class="col-4">
+              <div id="adminDash" class="card" style="display:none">
+                <div style="display:flex;justify-content:space-between;align-items:center">
+                  <h3 style="margin:0">Admin Dashboard <span class="tag orange">Admin</span></h3>
+                </div>
+                <canvas id="platformChart" style="max-height:200px"></canvas>
+              </div>
+            </div>
+          </div>
+        </section>
 
-<!-- INVESTORS -->
-<div id="investors" class="section">
-<h2>Investors</h2>
-<script>
-const investors=[
-"Amit Patel","Priya Verma","Rohit Shah","Neha Kapoor","Suresh Mehta",
-"Vikas Jain","Nitin Kumar","Sunita Malhotra","Rajiv Singhania",
-"Kavita Desai","Anil Agarwal","Pooja Arora","Sanjay Khanna",
-"Mehul Doshi","Rina Banerjee","Aakash Iyer","Deepak Rao",
-"Shweta Nair","Kunal Bansal","Manish Gupta","Varun Chopra",
-"Alok Mishra","Sneha Kulkarni","Harsh Vardhan","Payal Joshi",
-"Arjun Mallick","Ritu Saxena","Mohit Sethi","Preeti Goel","Naveen Pillai"
-];
-function mask(n){
-let p=n.split(" ");
-return p[0][0]+"*** "+p[1][0]+"****";
-}
-investors.forEach((n,i)=>{
-document.write(`<div class='card'><b>${mask(n)}</b><br>
-Budget: ₹${(i%10+3)}–${(i%10+8)} Cr</div>`);
-});
-</script>
-</div>
+        <!-- COMPANIES -->
+        <section id="companies" class="section card" style="display:none">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <h2 style="margin:0">Companies</h2>
+            <input id="companySearch" placeholder="Search companies..." oninput="filterCompanies()" style="max-width:260px" />
+          </div>
 
-</div>
+          <div id="companiesList" class="list-grid" aria-live="polite" style="margin-top:12px"></div>
+        </section>
 
-<footer>© 2026 E-Investors Platform</footer>
+        <!-- INVESTORS -->
+        <section id="investors" class="section card" style="display:none">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <h2 style="margin:0">Investors</h2>
+            <input id="investorSearch" placeholder="Search investors..." oninput="filterInvestors()" style="max-width:260px" />
+          </div>
 
-<!-- CHAT -->
-<div id="chatBtn" onclick="toggleChat()">💬</div>
-<div id="chatbox">
-<div id="chatHeader">Investree AI</div>
-<div id="chatBody"><p><b>Investree:</b> Ask me about ROI or companies.</p></div>
-<input id="chatInput" placeholder="Ask Investree..." onkeypress="chat(event)">
-</div>
+          <div id="investorsList" class="list-grid" aria-live="polite" style="margin-top:12px"></div>
+        </section>
+      </div>
+    </main>
 
-<script>
-function show(id){
-document.querySelectorAll('.section').forEach(s=>s.style.display='none');
-document.getElementById(id).style.display='block';
-}
+    <footer>© 2026 E-Investors Platform — Built for secure, transparent investing.</footer>
+  </div>
 
-function login(){
-const name=document.getElementById("name").value.trim();
-const email=document.getElementById("email").value.trim();
-const role=document.getElementById("role").value;
-if(!name||!email){alert("Fill all details");return;}
-localStorage.setItem("user",JSON.stringify({name,role}));
-show("dashboard");loadDash();
-}
+  <!-- CHAT -->
+  <div id="chatBtn" onclick="toggleChat()" aria-label="Open chat">💬</div>
+  <div id="chatbox" role="dialog" aria-label="Investree chat">
+    <div id="chatHeader">Investree AI</div>
+    <div id="chatBody"><p><strong>Investree:</strong> Ask me about ROI or companies.</p></div>
+    <input id="chatInput" placeholder="Ask Investree..." onkeypress="chat(event)" aria-label="Chat input" />
+  </div>
 
-function loadDash(){
-const u=JSON.parse(localStorage.getItem("user"));
-investorDash.style.display=u.role==="investor"?"block":"none";
-companyDash.style.display=u.role==="company"?"block":"none";
-adminDash.style.display=u.role==="admin"?"block":"none";
-if(u.role==="investor")
-invName.innerText="Welcome "+u.name[0]+"***";
-drawCharts();
-}
+  <script>
+    // Data (moved to arrays used by DOM generation — avoid document.write)
+    const companies = [
+      "GreenTech Pvt Ltd","MediCore Pharma","AgroGrow Industries","SteelForge Ltd",
+      "SolarNest Energy","UrbanBuild Infra","AquaPure Systems","HealthPlus Labs",
+      "EcoPack Solutions","FinEdge Services","CloudNova Tech","AutoSpark Motors",
+      "EduPrime Solutions","BioLife Organics","SmartLogix","FreshKart Supply",
+      "PowerGridX","NanoSoft AI","BlueWave Shipping","AgriRoots Ltd",
+      "MetalCore Works","RetailNova","TextilePro","FoodChain Pvt Ltd",
+      "MedAssist","InfraLine","GreenFuel Bio","UrbanFoods","CyberShield","BuildSmart"
+    ];
 
-function logout(){localStorage.clear();show("welcome");}
+    const investors = [
+      "Amit Patel","Priya Verma","Rohit Shah","Neha Kapoor","Suresh Mehta",
+      "Vikas Jain","Nitin Kumar","Sunita Malhotra","Rajiv Singhania",
+      "Kavita Desai","Anil Agarwal","Pooja Arora","Sanjay Khanna",
+      "Mehul Doshi","Rina Banerjee","Aakash Iyer","Deepak Rao",
+      "Shweta Nair","Kunal Bansal","Manish Gupta","Varun Chopra",
+      "Alok Mishra","Sneha Kulkarni","Harsh Vardhan","Payal Joshi",
+      "Arjun Mallick","Ritu Saxena","Mohit Sethi","Preeti Goel","Naveen Pillai"
+    ];
 
-function drawCharts(){
-new Chart(roiChart,{type:'line',
-data:{labels:["Jan","Feb","Mar","Apr","May"],
-datasets:[{label:"ROI %",data:[10,15,19,26,32]}]}});
+    // Utilities
+    function el(tag, attrs = {}, ...children) {
+      const e = document.createElement(tag);
+      for (const k in attrs) {
+        if (k === 'class') e.className = attrs[k];
+        else if (k === 'text') e.textContent = attrs[k];
+        else e.setAttribute(k, attrs[k]);
+      }
+      children.forEach(ch => {
+        if (typeof ch === 'string') e.appendChild(document.createTextNode(ch));
+        else if (ch) e.appendChild(ch);
+      });
+      return e;
+    }
 
-new Chart(turnoverChart,{type:'line',
-data:{labels:["Jan","Feb","Mar","Apr","May"],
-datasets:[{label:"Turnover (Cr)",data:[4,6,9,12,15]}]}});
+    // Render companies & investors
+    function renderCompanies(list = companies) {
+      const container = document.getElementById('companiesList');
+      container.innerHTML = '';
+      list.forEach((c, i) => {
+        const card = el('div', {class:'company-card'});
+        const turnover = ((i+3)*1.2).toFixed(1);
+        card.appendChild(el('div',{class:'small text'}, el('strong',{text:c})));
+        card.appendChild(el('div',{class:'small'}, `State: India | Turnover: ₹${turnover} Cr | Margin: ${15 + (i % 20)}%`));
+        container.appendChild(card);
+      });
+    }
 
-new Chart(platformChart,{type:'line',
-data:{labels:["Jan","Feb","Mar","Apr","May"],
-datasets:[{label:"Users",data:[40,65,90,120,180]}]}});}
+    function renderInvestors(list = investors) {
+      const container = document.getElementById('investorsList');
+      container.innerHTML = '';
+      list.forEach((n,i)=>{
+        const card = el('div', {class:'company-card'});
+        const nameMask = mask(n);
+        card.appendChild(el('div', {class:'small'}, el('strong',{text:nameMask})));
+        card.appendChild(el('div', {class:'small'}, `Budget: ₹${(i%10+3)}–${(i%10+8)} Cr`));
+        container.appendChild(card);
+      });
+    }
 
-function toggleChat(){
-chatbox.style.display=chatbox.style.display==="block"?"none":"block";
-}
+    function mask(n){
+      const p = n.split(' ');
+      if (p.length < 2) return n[0] + '***';
+      return p[0][0] + '*** ' + p[1][0] + '****';
+    }
 
-function chat(e){
-if(e.key!=="Enter")return;
-chatBody.innerHTML+=`<p><b>You:</b> ${chatInput.value}</p>
-<p><b>Investree:</b> Average ROI is around 30%.</p>`;
-chatInput.value="";
-chatBody.scrollTop=chatBody.scrollHeight;
-}
+    function filterCompanies(){
+      const q = document.getElementById('companySearch').value.toLowerCase();
+      renderCompanies(companies.filter(c=>c.toLowerCase().includes(q)));
+    }
+    function filterInvestors(){
+      const q = document.getElementById('investorSearch').value.toLowerCase();
+      renderInvestors(investors.filter(i=>i.toLowerCase().includes(q)));
+    }
 
-window.onload=()=>show("welcome");
-</script>
+    // Navigation & auth
+    function show(id){
+      document.querySelectorAll('.section').forEach(s=>s.style.display='none');
+      // sections are elements with class 'section'
+      const el = document.getElementById(id);
+      if (el) el.style.display='block';
+    }
 
+    function login(){
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const role = document.getElementById("role").value;
+      if(!name || !email){ alert("Please fill all details."); return; }
+      localStorage.setItem("user", JSON.stringify({name, email, role}));
+      show("dashboard");
+      loadDash();
+    }
+
+    function loadDash(){
+      const u = JSON.parse(localStorage.getItem("user") || 'null');
+      if(!u){ show('welcome'); return; }
+      document.getElementById('investorDash').style.display = u.role === "investor" ? "block" : "none";
+      document.getElementById('companyDash').style.display = u.role === "company" ? "block" : "none";
+      document.getElementById('adminDash').style.display = u.role === "admin" ? "block" : "none";
+      if(u.role === "investor"){
+        document.getElementById('invName').innerText = "Welcome " + u.name.split(' ')[0] + " •";
+      } else {
+        document.getElementById('invName').innerText = "";
+      }
+      drawCharts();
+    }
+
+    function logout(){ localStorage.removeItem('user'); show('welcome'); }
+
+    // Charts (safe element selection and context retrieval)
+    let charts = [];
+    function destroyCharts(){ charts.forEach(c=>c.destroy?.()); charts=[]; }
+    function drawCharts(){
+      destroyCharts();
+      const roiEl = document.getElementById('roiChart');
+      if(roiEl && document.getElementById('investorDash').style.display !== 'none'){
+        charts.push(new Chart(roiEl.getContext('2d'),{
+          type:'line',
+          data:{
+            labels:["Jan","Feb","Mar","Apr","May"],
+            datasets:[{label:"ROI %",data:[10,15,19,26,32], borderColor:'#1565C0', backgroundColor:'rgba(21,101,192,0.08)', tension:0.3}]
+          },
+          options:{plugins:{legend:{display:true}}, responsive:true}
+        }));
+      }
+
+      const turnEl = document.getElementById('turnoverChart');
+      if(turnEl && document.getElementById('companyDash').style.display !== 'none'){
+        charts.push(new Chart(turnEl.getContext('2d'),{
+          type:'line',
+          data:{
+            labels:["Jan","Feb","Mar","Apr","May"],
+            datasets:[{label:"Turnover (Cr)",data:[4,6,9,12,15], borderColor:'#2a9d8f', backgroundColor:'rgba(42,157,143,0.08)', tension:0.3}]
+          }, options:{responsive:true}
+        }));
+      }
+
+      const platEl = document.getElementById('platformChart');
+      if(platEl && document.getElementById('adminDash').style.display !== 'none'){
+        charts.push(new Chart(platEl.getContext('2d'),{
+          type:'line',
+          data:{
+            labels:["Jan","Feb","Mar","Apr","May"],
+            datasets:[{label:"Users",data:[40,65,90,120,180], borderColor:'#f4a261', backgroundColor:'rgba(244,162,97,0.08)', tension:0.3}]
+          }, options:{responsive:true}
+        }));
+      }
+    }
+
+    // Chat
+    function toggleChat(){ const cb = document.getElementById('chatbox'); cb.style.display = cb.style.display === 'block' ? 'none' : 'block'; }
+    function chat(e){
+      if(e.key !== "Enter") return;
+      const input = document.getElementById('chatInput');
+      const body = document.getElementById('chatBody');
+      const userText = input.value.trim();
+      if(!userText) return;
+      const you = el('p', {}, el('strong',{text:'You:'}), ' ' + userText);
+      const bot = el('p', {}, el('strong',{text:'Investree:'}), ' Average ROI is around 30%.');
+      body.appendChild(you);
+      body.appendChild(bot);
+      input.value = '';
+      body.scrollTop = body.scrollHeight;
+    }
+
+    // Initial render
+    window.onload = () => {
+      renderCompanies();
+      renderInvestors();
+      const user = JSON.parse(localStorage.getItem('user') || 'null');
+      if(user) { show('dashboard'); loadDash(); } else { show('welcome'); }
+    };
+  </script>
 </body>
 </html>
